@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  bsc:
+    image: "bnb-chain/bsc:${TAG}"
+    container_name: bsc-main
+    #restart: always
+    #network_mode: host
+    restart: unless-stopped
+    entrypoint: sh
+    command: -c "geth --config ./config.toml --datadir . --http --http.addr 0.0.0.0 --metrics --http.port 8545 --http.api \"eth,net,web3\" --ws --ws.port 3334 --ws.api \"eth,net,web3\" --http.vhosts=* --pruneancient=true --snapshot=true --syncmode=full --cache=112000 --tries-verify-mode=none --diffblock=5000 --maxpeers=100"
+    ports:
+    - "18545:8545"  # rpc
+    - "18546:8546"  # ws
+    - "30311:30311" # p2p
+    environment:
+      NETWORK: main
+    volumes:
+      - /opt/bigdata/bsc-mainnet/data:/opt/bigdata/bsc-mainnet/data
